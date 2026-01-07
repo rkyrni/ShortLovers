@@ -14,3 +14,10 @@ val BaseBlack = Color(color = 0XFF0D0D0D)
 val BaseBackground = Color(color = 0xFF1B1A1A)
 val InputBackgroudColor = Color(0xFF383629)
 val BaseBlue = Color(0xFF0084FF)
+
+// Glassmorphism tokens
+val GlassWhite = Color.White.copy(alpha = 0.1f)
+val GlassBorder = Color.White.copy(alpha = 0.2f)
+val GlassYellow = BaseYellow.copy(alpha = 0.9f)
+val GlowYellow = BaseYellow.copy(alpha = 0.15f)
+val FrostedBlack = Color.Black.copy(alpha = 0.4f)

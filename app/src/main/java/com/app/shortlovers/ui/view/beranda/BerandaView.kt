@@ -40,6 +40,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -59,9 +61,13 @@ import com.app.shortlovers.ui.components.EmptyView
 import com.app.shortlovers.ui.components.ErrorView
 import com.app.shortlovers.ui.components.LoadingView
 import com.app.shortlovers.ui.components.OfflineView
+import com.app.shortlovers.ui.components.frostedOverlay
 import com.app.shortlovers.ui.theme.BaseBackground
 import com.app.shortlovers.ui.theme.BaseBlack
 import com.app.shortlovers.ui.theme.BaseYellow
+import com.app.shortlovers.ui.theme.GlassBorder
+import com.app.shortlovers.ui.theme.GlassWhite
+import com.app.shortlovers.ui.theme.GlowYellow
 import com.app.shortlovers.ui.theme.KumbhSansFamily
 import com.app.shortlovers.viewModel.beranda.BerandaViewModel
 import kotlinx.coroutines.delay
@@ -76,7 +82,8 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     // Get tabs from API data
-    val tabs = mainData?.map { it.tabName ?: "" } ?: listOf("Utama", "Terbaru", "Populer", "Semua")
+    val tabs =
+        mainData?.map { it.tabName ?: "" } ?: listOf("Utama", "Terbaru", "Populer", "Semua")
 
     // Get dramas for current selected tab
     val currentDramas =
@@ -105,86 +112,143 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
                 ?: emptyList()
         }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(color = BaseBackground)) {
-        HeaderBar()
-
-        when {
-            isLoading -> {
-                LoadingView()
-            }
-
-            error != null -> {
-                if (error!!.code == DirectusErrorCode.NETWORK_ERROR) {
-                    OfflineView(
-                        onRetry = {
-                            viewModel.clearError()
-                            viewModel.fetchMainData()
-                        }
+    Box(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .background(color = BaseBackground)
+                .drawBehind {
+                    // Yellow glow at top-left corner
+                    drawCircle(
+                        brush =
+                            Brush.radialGradient(
+                                colors =
+                                    listOf(
+                                        GlowYellow,
+                                        Color.Transparent
+                                    ),
+                                center = Offset(0f, 0f),
+                                radius = 500f
+                            ),
+                        center = Offset(0f, 0f),
+                        radius = 500f
                     )
-                } else {
-                    ErrorView(
-                        message = error!!.getUserFriendlyMessage(),
-                        onRetry = {
-                            viewModel.clearError()
-                            viewModel.fetchMainData()
-                        }
+                    // Yellow glow at top-right corner
+                    drawCircle(
+                        brush =
+                            Brush.radialGradient(
+                                colors =
+                                    listOf(
+                                        GlowYellow.copy(
+                                            alpha = 0.1f
+                                        ),
+                                        Color.Transparent
+                                    ),
+                                center = Offset(size.width, 0f),
+                                radius = 400f
+                            ),
+                        center = Offset(size.width, 0f),
+                        radius = 400f
                     )
                 }
-            }
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            HeaderBar()
 
-            mainData.isNullOrEmpty() -> {
-                EmptyView(
-                    title = "Belum Ada Konten",
-                    message = "Konten sedang disiapkan. Silakan coba lagi nanti.",
-                    actionLabel = "Muat Ulang",
-                    onAction = { viewModel.fetchMainData() }
-                )
-            }
+            when {
+                isLoading -> {
+                    LoadingView()
+                }
 
-            else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(bottom = 16.dp)
-                ) {
-                    // Carousel
-                    item { CarouselComponent(featuredDramas) }
-
-                    // Tab Menu
-                    item {
-                        Spacer(modifier = Modifier.height(15.dp))
-                        ScrollableTabMenu(
-                            tabs = tabs,
-                            selectedTabIndex = selectedTabIndex,
-                            onTabSelected = { selectedTabIndex = it }
+                error != null -> {
+                    if (error!!.code == DirectusErrorCode.NETWORK_ERROR) {
+                        OfflineView(
+                            onRetry = {
+                                viewModel.clearError()
+                                viewModel.fetchMainData()
+                            }
+                        )
+                    } else {
+                        ErrorView(
+                            message = error!!.getUserFriendlyMessage(),
+                            onRetry = {
+                                viewModel.clearError()
+                                viewModel.fetchMainData()
+                            }
                         )
                     }
+                }
 
-                    // Dropdown Filters
-                    item {
-                        Spacer(modifier = Modifier.height(12.dp))
-                        DropdownFilterRow()
-                        Spacer(modifier = Modifier.height(12.dp))
-                    }
+                mainData.isNullOrEmpty() -> {
+                    EmptyView(
+                        title = "Belum Ada Konten",
+                        message =
+                            "Konten sedang disiapkan. Silakan coba lagi nanti.",
+                        actionLabel = "Muat Ulang",
+                        onAction = { viewModel.fetchMainData() }
+                    )
+                }
 
-                    // Series Grid - manual 2-column layout
-                    items(currentDramas.chunked(2)) { rowItems ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            rowItems.forEach { drama ->
-                                Box(modifier = Modifier.weight(1f)) { SeriesCard(drama) }
-                            }
-                            // Fill empty space if odd number
-                            if (rowItems.size == 1) {
-                                Spacer(modifier = Modifier.weight(1f))
-                            }
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = PaddingValues(bottom = 16.dp)
+                    ) {
+                        // Carousel
+                        item { CarouselComponent(featuredDramas) }
+
+                        // Tab Menu
+                        item {
+                            Spacer(modifier = Modifier.height(15.dp))
+                            ScrollableTabMenu(
+                                tabs = tabs,
+                                selectedTabIndex = selectedTabIndex,
+                                onTabSelected = {
+                                    selectedTabIndex = it
+                                }
+                            )
                         }
-                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Dropdown Filters
+                        item {
+                            Spacer(modifier = Modifier.height(12.dp))
+                            DropdownFilterRow()
+                            Spacer(modifier = Modifier.height(12.dp))
+                        }
+
+                        // Series Grid - manual 2-column layout
+                        items(currentDramas.chunked(2)) { rowItems ->
+                            Row(
+                                modifier =
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(
+                                            horizontal =
+                                                16.dp
+                                        ),
+                                horizontalArrangement =
+                                    Arrangement.spacedBy(12.dp)
+                            ) {
+                                rowItems.forEach { drama ->
+                                    Box(
+                                        modifier =
+                                            Modifier.weight(
+                                                1f
+                                            )
+                                    ) { SeriesCard(drama) }
+                                }
+                                // Fill empty space if odd number
+                                if (rowItems.size == 1) {
+                                    Spacer(
+                                        modifier =
+                                            Modifier.weight(
+                                                1f
+                                            )
+                                    )
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(16.dp))
+                        }
                     }
                 }
             }
@@ -305,22 +369,29 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
                                 Brush.verticalGradient(
                                     colors =
                                         listOf(
+                                            GlowYellow,
                                             Color.Transparent,
-                                            Color.Black.copy(
-                                                alpha = 0.7f
-                                            )
+                                            Color.Black
+                                                .copy(
+                                                    alpha =
+                                                        0.7f
+                                                )
                                         )
                                 )
                             )
                 )
 
-                // Title overlay
+                // Glass frosted title overlay
                 Box(
                     modifier =
                         Modifier
-                            .fillMaxWidth()
                             .align(Alignment.BottomStart)
                             .padding(16.dp)
+                            .frostedOverlay()
+                            .padding(
+                                horizontal = 16.dp,
+                                vertical = 12.dp
+                            )
                 ) {
                     Text(
                         text = titles.getOrNull(page) ?: "",
@@ -339,9 +410,10 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(end = 16.dp, bottom = 16.dp)
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 16.dp)
         ) {
             repeat(images.size) { index ->
                 val isSelected = pagerState.currentPage == index
@@ -351,7 +423,8 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
                             .padding(3.dp)
                             .size(if (isSelected) 8.dp else 6.dp)
                             .background(
-                                if (isSelected) BaseYellow else Color.Gray,
+                                if (isSelected) BaseYellow
+                                else Color.Gray,
                                 shape = CircleShape
                             )
                 )
@@ -379,11 +452,15 @@ fun ScrollableTabMenu(tabs: List<String>, selectedTabIndex: Int, onTabSelected: 
                             if (isSelected) {
                                 Modifier.background(BaseYellow)
                             } else {
-                                Modifier.border(
-                                    1.dp,
-                                    Color.White,
-                                    RoundedCornerShape(20.dp)
-                                )
+                                Modifier
+                                    .background(GlassWhite)
+                                    .border(
+                                        1.dp,
+                                        GlassBorder,
+                                        RoundedCornerShape(
+                                            20.dp
+                                        )
+                                    )
                             }
                         )
                         .clickable { onTabSelected(index) }
@@ -393,7 +470,9 @@ fun ScrollableTabMenu(tabs: List<String>, selectedTabIndex: Int, onTabSelected: 
                     text = tab,
                     color = if (isSelected) Color.Black else Color.White,
                     fontFamily = KumbhSansFamily,
-                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    fontWeight =
+                        if (isSelected) FontWeight.Bold
+                        else FontWeight.Normal,
                     fontSize = 14.sp
                 )
             }
