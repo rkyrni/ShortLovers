@@ -1,15 +1,29 @@
+# IDE Directories
+.idea/
+.vscode/
+.kotlin/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
+*.ipr
+*.iws
+
+# Gradle
+.gradle/
+build/
 /captures
-.externalNativeBuild
-.cxx
+.externalNativeBuild/
+.cxx/
+
+# Local configuration
+/local.properties
 local.properties
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Android
+*.apk
+*.aab
+*.ap_
+*.dex
+
