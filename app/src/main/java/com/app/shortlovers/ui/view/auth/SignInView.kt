@@ -163,9 +163,11 @@ fun SignInScreen() {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Row() {
-                    Image(painter = painterResource(R.drawable.google),
+                    Image(
+                        painter = painterResource(R.drawable.google),
                         contentDescription = "",
-                        modifier = Modifier.size(20.dp))
+                        modifier = Modifier.size(20.dp)
+                    )
 
                     Spacer(modifier = Modifier.width(5.dp))
 
@@ -199,7 +201,7 @@ fun SignInScreen() {
                         fontStyle = FontStyle.Italic,
                         fontWeight = FontWeight.Bold
                     ),
-                    modifier = Modifier.clickable {  }
+                    modifier = Modifier.clickable { }
                 )
 
             }
@@ -210,7 +212,9 @@ fun SignInScreen() {
                     color = BaseBlue,
                     fontSize = 14.sp
                 ),
-                modifier = Modifier.fillMaxWidth().clickable {  },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { },
                 textAlign = TextAlign.Center
             )
 

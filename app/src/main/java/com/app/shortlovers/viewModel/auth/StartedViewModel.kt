@@ -1,8 +1,8 @@
 package com.app.shortlovers.viewModel.auth
 
-import androidx.lifecycle.ViewModel
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.ViewModel
 
 class StartedViewModel : ViewModel() {
 

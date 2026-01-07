@@ -1,10 +1,7 @@
 package com.app.shortlovers.viewModel.daftarSaya
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.app.shortlovers.core.models.MovieItem
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 class DaftarSayaViewModel : ViewModel() {
     val movies = listOf(

@@ -43,7 +43,7 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
     val isChecked = viewModel.isChecked.value
 
     val annotatedText = buildAnnotatedString {
-        withStyle(style = SpanStyle(color = Color.White,fontSize = 16.sp,)) {
+        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp)) {
             append("Saya setuju dengan ")
         }
         pushStringAnnotation(tag = "TERMS", annotation = "https://example.com/terms")
@@ -58,7 +58,7 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
         }
         pop()
 
-        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp,)) {
+        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp)) {
             append(" dan ")
         }
 
@@ -75,7 +75,7 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
         }
         pop()
 
-        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp,)) {
+        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp)) {
             append(" kami.")
         }
     }
@@ -168,12 +168,20 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
                 ClickableText(
                     text = annotatedText,
                     onClick = { offset ->
-                        annotatedText.getStringAnnotations(tag = "TERMS", start = offset, end = offset)
+                        annotatedText.getStringAnnotations(
+                            tag = "TERMS",
+                            start = offset,
+                            end = offset
+                        )
                             .firstOrNull()?.let { annotation ->
                                 println("Klik: ${annotation.item}")
                             }
 
-                        annotatedText.getStringAnnotations(tag = "PRIVACY", start = offset, end = offset)
+                        annotatedText.getStringAnnotations(
+                            tag = "PRIVACY",
+                            start = offset,
+                            end = offset
+                        )
                             .firstOrNull()?.let { annotation ->
                                 println("Klik: ${annotation.item}")
                             }

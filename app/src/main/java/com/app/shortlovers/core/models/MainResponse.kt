@@ -10,26 +10,26 @@ import com.google.gson.annotations.SerializedName
  * We use custom deserializer to populate either `categories` or `dramas` based on content.
  */
 data class MainResponse(
-        @SerializedName("tab_name") val tabName: String?,
+    @SerializedName("tab_name") val tabName: String?,
 
-        // For tabs with categorized content (Utama, Terbaru, Populer)
-        val categories: List<MainResponseCategory>? = null,
+    // For tabs with categorized content (Utama, Terbaru, Populer)
+    val categories: List<MainResponseCategory>? = null,
 
-        // For tabs with direct drama list (Semua)
-        val dramas: List<MainResponseDrama>? = null
+    // For tabs with direct drama list (Semua)
+    val dramas: List<MainResponseDrama>? = null
 )
 
 data class MainResponseCategory(
-        @SerializedName("category_name") val categoryName: String?,
-        val dramas: List<MainResponseDrama>?
+    @SerializedName("category_name") val categoryName: String?,
+    val dramas: List<MainResponseDrama>?
 )
 
 data class MainResponseDrama(
-        val id: String? = null,
-        val title: String? = null,
-        @SerializedName("cover_link") val coverLink: String? = null,
-        val cover: String? = null,
-        val category: MainResponseDramaCategory? = null,
+    val id: String? = null,
+    val title: String? = null,
+    @SerializedName("cover_link") val coverLink: String? = null,
+    val cover: String? = null,
+    val category: MainResponseDramaCategory? = null,
 )
 
 data class MainResponseDramaCategory(val name: String?)

@@ -48,10 +48,12 @@ class BerandaViewModel : ViewModel() {
                     Log.d(LogTag, "fetchMainData success")
                     logResponseDetails(result.data.data)
                 }
+
                 is NetworkResult.Error -> {
                     _error.value = result.exception
                     handleError(result.exception)
                 }
+
                 is NetworkResult.Loading -> {
                     // Already handled by _isLoading
                 }
@@ -71,12 +73,15 @@ class BerandaViewModel : ViewModel() {
                 // TODO: Navigate to login or refresh token
                 Log.w(LogTag, "Token issue - should redirect to login")
             }
+
             DirectusErrorCode.FORBIDDEN -> {
                 Log.w(LogTag, "Access denied")
             }
+
             DirectusErrorCode.NETWORK_ERROR -> {
                 Log.w(LogTag, "Network error - check internet connection")
             }
+
             else -> {
                 Log.w(LogTag, "Unhandled error code: ${exception.code}")
             }
@@ -90,8 +95,8 @@ class BerandaViewModel : ViewModel() {
                 Log.d(LogTag, "Tab: ${tab.tabName}, categories: ${tab.categories.size}")
                 tab.categories.forEach { category ->
                     Log.d(
-                            LogTag,
-                            "  Category: ${category.categoryName}, dramas: ${category.dramas?.size ?: 0}"
+                        LogTag,
+                        "  Category: ${category.categoryName}, dramas: ${category.dramas?.size ?: 0}"
                     )
                 }
             } else if (tab.dramas != null && tab.dramas.isNotEmpty()) {

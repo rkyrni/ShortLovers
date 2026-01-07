@@ -44,8 +44,7 @@ import com.app.shortlovers.ui.theme.BaseYellow
 import com.app.shortlovers.ui.theme.InputBackgroudColor
 
 @Composable
-fun SignUpView()
-{
+fun SignUpView() {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
@@ -211,7 +210,7 @@ fun SignUpView()
                         fontStyle = FontStyle.Italic,
                         fontWeight = FontWeight.Bold
                     ),
-                    modifier = Modifier.clickable {  }
+                    modifier = Modifier.clickable { }
                 )
 
             }

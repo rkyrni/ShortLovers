@@ -21,9 +21,9 @@ import java.lang.reflect.Type
 class MainResponseDeserializer : JsonDeserializer<MainResponse> {
 
     override fun deserialize(
-            json: JsonElement,
-            typeOfT: Type,
-            context: JsonDeserializationContext
+        json: JsonElement,
+        typeOfT: Type,
+        context: JsonDeserializationContext
     ): MainResponse {
         val jsonObject = json.asJsonObject
 
@@ -44,7 +44,7 @@ class MainResponseDeserializer : JsonDeserializer<MainResponse> {
             // Parse as List<MainResponseCategory>
             val categoryListType = object : TypeToken<List<MainResponseCategory>>() {}.type
             val categories: List<MainResponseCategory> =
-                    context.deserialize(dataArray, categoryListType)
+                context.deserialize(dataArray, categoryListType)
             MainResponse(tabName = tabName, categories = categories, dramas = null)
         } else {
             // Parse as List<MainResponseDrama>
