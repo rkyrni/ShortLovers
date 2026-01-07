@@ -1,4 +1,4 @@
-package com.app.shortlovers.ui.view.daftarSaya
+package com.app.shortlovers.ui.view.myList
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -46,20 +46,17 @@ import coil.compose.rememberAsyncImagePainter
 import com.app.shortlovers.core.models.MovieItem
 import com.app.shortlovers.ui.theme.BaseBackground
 import com.app.shortlovers.ui.theme.BaseYellow
-import com.app.shortlovers.viewModel.daftarSaya.DaftarSayaViewModel
-
+import com.app.shortlovers.viewModel.myList.MyListViewModel
 
 @Composable
-fun DaftarSayaView(viewModel: DaftarSayaViewModel = viewModel()) {
+fun MyListView(viewModel: MyListViewModel = viewModel()) {
 
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Lanjut Nonton", "Disimpan", "Disukai")
+    val tabs = listOf("Continue Watching", "Saved", "Liked")
 
-    Column(
-        Modifier
-            .fillMaxSize()
-            .background(BaseBackground)
-    ) {
+    Column(Modifier
+        .fillMaxSize()
+        .background(BaseBackground)) {
         // --- Header Tabs ---
         TabRow(
             selectedTabIndex = selectedTab,
@@ -93,28 +90,22 @@ fun DaftarSayaView(viewModel: DaftarSayaViewModel = viewModel()) {
 
         when (selectedTab) {
             0 -> {
-                // 🟡 TAB 1: Lanjut Nonton
+                // 🟡 TAB 1: Continue Watching
                 FilterBarSection()
                 MovieGridSection(viewModel)
             }
 
             1 -> {
-                // 🟢 TAB 2: Disimpan (dummy)
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("📁 Belum ada film yang disimpan", color = Color.White, fontSize = 16.sp)
+                // 🟢 TAB 2: Saved (dummy)
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("📁 No saved movies yet", color = Color.White, fontSize = 16.sp)
                 }
             }
 
             2 -> {
-                // 🔵 TAB 3: Disukai (dummy)
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("❤️ Belum ada film yang disukai", color = Color.White, fontSize = 16.sp)
+                // 🔵 TAB 3: Liked (dummy)
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text("❤️ No liked movies yet", color = Color.White, fontSize = 16.sp)
                 }
             }
         }
@@ -129,50 +120,43 @@ fun FilterBarSection() {
             .padding(horizontal = 16.dp, vertical = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        FilterChip("Kategori") { println("Kategori diklik") }
-        FilterChip("Tanggal") { println("Tanggal diklik") }
-        FilterChip("A - Z") { println("A - Z diklik") }
+        FilterChip("Category") { println("Category clicked") }
+        FilterChip("Date") { println("Date clicked") }
+        FilterChip("A - Z") { println("A - Z clicked") }
     }
 }
 
 @Composable
-fun MovieGridSection(viewModel: DaftarSayaViewModel) {
+fun MovieGridSection(viewModel: MyListViewModel) {
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         modifier = Modifier.padding(horizontal = 10.dp)
-    ) {
-        items(viewModel.movies) { movie ->
-            MovieCard(movie)
-        }
-    }
+    ) { items(viewModel.movies) { movie -> MovieCard(movie) } }
 }
 
 @Composable
-fun FilterChip(
-    label: String,
-    onClick: () -> Unit
-) {
+fun FilterChip(label: String, onClick: () -> Unit) {
     Box(
-        modifier = Modifier
-            .background(Color(0xFF0D0D0D), shape = RoundedCornerShape(6.dp)) // corner radius kecil
-            .border(
-                width = 1.dp,
-                color = BaseYellow,
-                shape = RoundedCornerShape(6.dp)
-            )
-            .padding(horizontal = 12.dp, vertical = 4.dp)
-            .clickable() { onClick() },
+        modifier =
+            Modifier
+                .background(
+                    Color(0xFF0D0D0D),
+                    shape = RoundedCornerShape(6.dp)
+                ) // small corner radius
+                .border(
+                    width = 1.dp,
+                    color = BaseYellow,
+                    shape = RoundedCornerShape(6.dp)
+                )
+                .padding(horizontal = 12.dp, vertical = 4.dp)
+                .clickable() { onClick() },
         contentAlignment = Alignment.Center
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
-            Text(
-                text = label,
-                color = BaseYellow,
-                fontSize = 14.sp
-            )
+            Text(text = label, color = BaseYellow, fontSize = 14.sp)
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = "Dropdown",
@@ -185,19 +169,18 @@ fun FilterChip(
 
 @Composable
 fun MovieCard(movie: MovieItem) {
-    Column(
-        Modifier
-            .padding(6.dp)
-            .width(160.dp)
-    ) {
+    Column(Modifier
+        .padding(6.dp)
+        .width(160.dp)) {
         Image(
             painter = rememberAsyncImagePainter(movie.imageUrl),
             contentDescription = movie.title,
-            modifier = Modifier
-                .height(210.dp)
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(8.dp))
-                .background(Color.Gray),
+            modifier =
+                Modifier
+                    .height(210.dp)
+                    .fillMaxWidth()
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.Gray),
             contentScale = ContentScale.Crop
         )
         Text(

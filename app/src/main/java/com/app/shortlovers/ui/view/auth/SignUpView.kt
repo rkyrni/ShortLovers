@@ -50,11 +50,9 @@ fun SignUpView() {
     var password by remember { mutableStateOf("") }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center,
-    )
-    {
+    ) {
         Image(
             painter = painterResource(id = R.drawable.bg_1),
             contentDescription = null,
@@ -63,22 +61,24 @@ fun SignUpView() {
         )
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.6f),
-                            Color.Black.copy(alpha = 0.7f),
-                            Color.Black.copy(alpha = 0.8f),
-                            Color.Black.copy(alpha = 0.9f),
-                            Color.Black.copy(alpha = 1f),
-                            Color.Black.copy(alpha = 1f),
-                            Color.Black.copy(alpha = 1f),
-                            Color.Black.copy(alpha = 1f),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    Color.Black.copy(alpha = 0.6f),
+                                    Color.Black.copy(alpha = 0.7f),
+                                    Color.Black.copy(alpha = 0.8f),
+                                    Color.Black.copy(alpha = 0.9f),
+                                    Color.Black.copy(alpha = 1f),
+                                    Color.Black.copy(alpha = 1f),
+                                    Color.Black.copy(alpha = 1f),
+                                    Color.Black.copy(alpha = 1f),
+                                )
                         )
                     )
-                )
         )
         Column(
             modifier = Modifier
@@ -86,10 +86,9 @@ fun SignUpView() {
                 .padding(24.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
-        )
-        {
+        ) {
             Text(
-                text = "Buat Akun Baru",
+                text = "Create New Account",
                 color = Color.White,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -107,14 +106,15 @@ fun SignUpView() {
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = InputBackgroudColor,
-                    focusedContainerColor = InputBackgroudColor,
-                    unfocusedIndicatorColor = InputBackgroudColor,
-                    focusedIndicatorColor = BaseYellow,
-                    cursorColor = BaseYellow,
-                    focusedLabelColor = BaseYellow,
-                )
+                colors =
+                    TextFieldDefaults.colors(
+                        unfocusedContainerColor = InputBackgroudColor,
+                        focusedContainerColor = InputBackgroudColor,
+                        unfocusedIndicatorColor = InputBackgroudColor,
+                        focusedIndicatorColor = BaseYellow,
+                        cursorColor = BaseYellow,
+                        focusedLabelColor = BaseYellow,
+                    )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -128,14 +128,15 @@ fun SignUpView() {
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = InputBackgroudColor,
-                    focusedContainerColor = InputBackgroudColor,
-                    unfocusedIndicatorColor = InputBackgroudColor,
-                    focusedIndicatorColor = BaseYellow,
-                    cursorColor = BaseYellow,
-                    focusedLabelColor = BaseYellow,
-                )
+                colors =
+                    TextFieldDefaults.colors(
+                        unfocusedContainerColor = InputBackgroudColor,
+                        focusedContainerColor = InputBackgroudColor,
+                        unfocusedIndicatorColor = InputBackgroudColor,
+                        focusedIndicatorColor = BaseYellow,
+                        cursorColor = BaseYellow,
+                        focusedLabelColor = BaseYellow,
+                    )
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -149,27 +150,28 @@ fun SignUpView() {
                 visualTransformation = PasswordVisualTransformation(),
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
-                colors = TextFieldDefaults.colors(
-                    unfocusedContainerColor = InputBackgroudColor,
-                    focusedContainerColor = InputBackgroudColor,
-                    unfocusedIndicatorColor = InputBackgroudColor,
-                    focusedIndicatorColor = BaseYellow,
-                    cursorColor = BaseYellow,
-                    focusedLabelColor = BaseYellow,
-                )
+                colors =
+                    TextFieldDefaults.colors(
+                        unfocusedContainerColor = InputBackgroudColor,
+                        focusedContainerColor = InputBackgroudColor,
+                        unfocusedIndicatorColor = InputBackgroudColor,
+                        focusedIndicatorColor = BaseYellow,
+                        cursorColor = BaseYellow,
+                        focusedLabelColor = BaseYellow,
+                    )
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Text(
-                text = "Link verifikasi akan dikirim ke email Anda",
+                text = "A verification link will be sent to your email",
                 color = Color.White,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center
             )
 
             Button(
-                onClick = { },
+                onClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 16.dp),
@@ -177,7 +179,7 @@ fun SignUpView() {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "Daftar",
+                    text = "Sign Up",
                     color = Color.Black,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold
@@ -186,35 +188,31 @@ fun SignUpView() {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.fillMaxWidth()
-            )
-            {
+            Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Sudah punya akun?",
-                    style = TextStyle(
-                        color = BaseYellow,
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Bold
-                    ),
+                    text = "Already have an account?",
+                    style =
+                        TextStyle(
+                            color = BaseYellow,
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
                 )
 
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    text = "Masuk",
-                    style = TextStyle(
-                        color = BaseYellow,
-                        fontSize = 14.sp,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.Bold
-                    ),
-                    modifier = Modifier.clickable { }
+                    text = "Sign In",
+                    style =
+                        TextStyle(
+                            color = BaseYellow,
+                            fontSize = 14.sp,
+                            fontStyle = FontStyle.Italic,
+                            fontWeight = FontWeight.Bold
+                        ),
+                    modifier = Modifier.clickable {}
                 )
-
             }
         }
     }
-
 }

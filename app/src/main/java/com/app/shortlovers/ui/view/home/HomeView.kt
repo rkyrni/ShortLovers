@@ -1,4 +1,4 @@
-package com.app.shortlovers.ui.view.beranda
+package com.app.shortlovers.ui.view.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -26,7 +28,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -44,6 +45,7 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -63,17 +65,16 @@ import com.app.shortlovers.ui.components.LoadingView
 import com.app.shortlovers.ui.components.OfflineView
 import com.app.shortlovers.ui.components.frostedOverlay
 import com.app.shortlovers.ui.theme.BaseBackground
-import com.app.shortlovers.ui.theme.BaseBlack
 import com.app.shortlovers.ui.theme.BaseYellow
 import com.app.shortlovers.ui.theme.GlassBorder
 import com.app.shortlovers.ui.theme.GlassWhite
 import com.app.shortlovers.ui.theme.GlowYellow
 import com.app.shortlovers.ui.theme.KumbhSansFamily
-import com.app.shortlovers.viewModel.beranda.BerandaViewModel
+import com.app.shortlovers.viewModel.home.HomeViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
+fun HomeView(viewModel: HomeViewModel = viewModel()) {
     val mainData by viewModel.mainData
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
@@ -82,8 +83,7 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
     // Get tabs from API data
-    val tabs =
-        mainData?.map { it.tabName ?: "" } ?: listOf("Utama", "Terbaru", "Populer", "Semua")
+    val tabs = mainData?.map { it.tabName ?: "" } ?: listOf("Main", "Latest", "Popular", "All")
 
     // Get dramas for current selected tab
     val currentDramas =
@@ -122,11 +122,7 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
                     drawCircle(
                         brush =
                             Brush.radialGradient(
-                                colors =
-                                    listOf(
-                                        GlowYellow,
-                                        Color.Transparent
-                                    ),
+                                colors = listOf(GlowYellow, Color.Transparent),
                                 center = Offset(0f, 0f),
                                 radius = 500f
                             ),
@@ -139,9 +135,7 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
                             Brush.radialGradient(
                                 colors =
                                     listOf(
-                                        GlowYellow.copy(
-                                            alpha = 0.1f
-                                        ),
+                                        GlowYellow.copy(alpha = 0.1f),
                                         Color.Transparent
                                     ),
                                 center = Offset(size.width, 0f),
@@ -152,9 +146,8 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
                     )
                 }
     ) {
+        // Main content layer
         Column(modifier = Modifier.fillMaxSize()) {
-            HeaderBar()
-
             when {
                 isLoading -> {
                     LoadingView()
@@ -181,10 +174,9 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
 
                 mainData.isNullOrEmpty() -> {
                     EmptyView(
-                        title = "Belum Ada Konten",
-                        message =
-                            "Konten sedang disiapkan. Silakan coba lagi nanti.",
-                        actionLabel = "Muat Ulang",
+                        title = "No Content Yet",
+                        message = "Content is being prepared. Please try again later.",
+                        actionLabel = "Reload",
                         onAction = { viewModel.fetchMainData() }
                     )
                 }
@@ -194,57 +186,40 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(bottom = 16.dp)
                     ) {
-                        // Carousel
-                        item { CarouselComponent(featuredDramas) }
+                        // Search Bar - at the top
+                        item { SearchBar() }
 
-                        // Tab Menu
+                        // Tab Menu - above carousel
                         item {
-                            Spacer(modifier = Modifier.height(15.dp))
+                            Spacer(modifier = Modifier.height(8.dp))
                             ScrollableTabMenu(
                                 tabs = tabs,
                                 selectedTabIndex = selectedTabIndex,
-                                onTabSelected = {
-                                    selectedTabIndex = it
-                                }
+                                onTabSelected = { selectedTabIndex = it }
                             )
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
 
-                        // Dropdown Filters
-                        item {
-                            Spacer(modifier = Modifier.height(12.dp))
-                            DropdownFilterRow()
-                            Spacer(modifier = Modifier.height(12.dp))
-                        }
+                        // Carousel
+                        item { CarouselComponent(featuredDramas) }
+
+                        // Spacer before grid
+                        item { Spacer(modifier = Modifier.height(16.dp)) }
 
                         // Series Grid - manual 2-column layout
                         items(currentDramas.chunked(2)) { rowItems ->
                             Row(
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(
-                                            horizontal =
-                                                16.dp
-                                        ),
-                                horizontalArrangement =
-                                    Arrangement.spacedBy(12.dp)
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
                                 rowItems.forEach { drama ->
-                                    Box(
-                                        modifier =
-                                            Modifier.weight(
-                                                1f
-                                            )
-                                    ) { SeriesCard(drama) }
+                                    Box(modifier = Modifier.weight(1f)) { SeriesCard(drama) }
                                 }
                                 // Fill empty space if odd number
                                 if (rowItems.size == 1) {
-                                    Spacer(
-                                        modifier =
-                                            Modifier.weight(
-                                                1f
-                                            )
-                                    )
+                                    Spacer(modifier = Modifier.weight(1f))
                                 }
                             }
                             Spacer(modifier = Modifier.height(16.dp))
@@ -257,40 +232,32 @@ fun BerandaView(viewModel: BerandaViewModel = viewModel()) {
 }
 
 @Composable
-fun HeaderBar() {
-    Row(
+fun SearchBar() {
+    Box(
         modifier =
             Modifier
                 .fillMaxWidth()
-                .background(BaseBlack)
-                .padding(horizontal = 16.dp, vertical = 12.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+                .statusBarsPadding()
+                .padding(horizontal = 16.dp)
+                .padding(top = 8.dp)
+                .frostedOverlay(cornerRadius = 24.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
-        // Menu Icon
-        Icon(
-            imageVector = Icons.Default.Menu,
-            contentDescription = "Menu",
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
-
-        // Title
-        Text(
-            text = "ShortLovers",
-            color = BaseYellow,
-            fontFamily = KumbhSansFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-
-        // Search Icon
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = "Search",
-            tint = Color.White,
-            modifier = Modifier.size(24.dp)
-        )
+        Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
+            Icon(
+                imageVector = Icons.Default.Search,
+                contentDescription = null,
+                tint = Color.Gray,
+                modifier = Modifier.size(20.dp)
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = "Search drama...",
+                color = Color.Gray,
+                fontSize = 14.sp,
+                fontFamily = KumbhSansFamily
+            )
+        }
     }
 }
 
@@ -306,11 +273,7 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
 
     val titles =
         if (dramas.isEmpty()) {
-            listOf(
-                "Sang Konglomerat Terlahir Kembali",
-                "Cinta di Balik Langit Jingga",
-                "Petualangan Tanpa Akhir"
-            )
+            listOf("The Reborn Tycoon", "Love Behind the Orange Sky", "Endless Adventure")
         } else {
             dramas.map { it.title ?: "" }
         }
@@ -352,6 +315,8 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
                                 .data(imageData)
                                 .crossfade(true)
                                 .build(),
+                        placeholder = painterResource(R.drawable.placeholder_drama),
+                        error = painterResource(R.drawable.placeholder_drama),
                         contentDescription = null,
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
@@ -369,40 +334,40 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
                                 Brush.verticalGradient(
                                     colors =
                                         listOf(
-                                            GlowYellow,
                                             Color.Transparent,
-                                            Color.Black
-                                                .copy(
-                                                    alpha =
-                                                        0.7f
-                                                )
+                                            Color.Black.copy(
+                                                alpha = 0.7f
+                                            )
                                         )
                                 )
                             )
                 )
 
                 // Glass frosted title overlay
-                Box(
+                // Title overlay with shadow (no box)
+                Text(
+                    text = titles.getOrNull(page) ?: "",
+                    color = Color.White,
+                    fontFamily = KumbhSansFamily,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 3,
+                    overflow = TextOverflow.Ellipsis,
+                    style =
+                        androidx.compose.ui.text.TextStyle(
+                            shadow =
+                                Shadow(
+                                    color = Color.Black.copy(alpha = 0.8f),
+                                    offset = Offset(2f, 2f),
+                                    blurRadius = 8f
+                                )
+                        ),
                     modifier =
                         Modifier
                             .align(Alignment.BottomStart)
                             .padding(16.dp)
-                            .frostedOverlay()
-                            .padding(
-                                horizontal = 16.dp,
-                                vertical = 12.dp
-                            )
-                ) {
-                    Text(
-                        text = titles.getOrNull(page) ?: "",
-                        color = Color.White,
-                        fontFamily = KumbhSansFamily,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 2,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
+                            .padding(bottom = 24.dp)
+                )
             }
         }
 
@@ -410,10 +375,9 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
-            modifier =
-                Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 16.dp)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 16.dp)
         ) {
             repeat(images.size) { index ->
                 val isSelected = pagerState.currentPage == index
@@ -423,8 +387,7 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
                             .padding(3.dp)
                             .size(if (isSelected) 8.dp else 6.dp)
                             .background(
-                                if (isSelected) BaseYellow
-                                else Color.Gray,
+                                if (isSelected) BaseYellow else Color.Gray,
                                 shape = CircleShape
                             )
                 )
@@ -457,9 +420,7 @@ fun ScrollableTabMenu(tabs: List<String>, selectedTabIndex: Int, onTabSelected: 
                                     .border(
                                         1.dp,
                                         GlassBorder,
-                                        RoundedCornerShape(
-                                            20.dp
-                                        )
+                                        RoundedCornerShape(20.dp)
                                     )
                             }
                         )
@@ -470,9 +431,7 @@ fun ScrollableTabMenu(tabs: List<String>, selectedTabIndex: Int, onTabSelected: 
                     text = tab,
                     color = if (isSelected) Color.Black else Color.White,
                     fontFamily = KumbhSansFamily,
-                    fontWeight =
-                        if (isSelected) FontWeight.Bold
-                        else FontWeight.Normal,
+                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
                     fontSize = 14.sp
                 )
             }
@@ -488,8 +447,8 @@ fun DropdownFilterRow() {
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        // Kategori dropdown
-        DropdownFilterButton(text = "Kategori", onClick = { /* Visual only for now */ })
+        // Category dropdown
+        DropdownFilterButton(text = "Category", onClick = { /* Visual only for now */ })
 
         // A-Z dropdown
         DropdownFilterButton(text = "A-Z", onClick = { /* Visual only for now */ })
@@ -537,6 +496,8 @@ fun SeriesCard(drama: MainResponseDrama) {
                     .data(drama.coverLink ?: drama.cover)
                     .crossfade(true)
                     .build(),
+            placeholder = painterResource(R.drawable.placeholder_drama),
+            error = painterResource(R.drawable.placeholder_drama),
             contentDescription = drama.title,
             contentScale = ContentScale.Crop,
             modifier =

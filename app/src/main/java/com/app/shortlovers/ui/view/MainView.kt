@@ -1,6 +1,7 @@
 package com.app.shortlovers.ui.view
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -28,34 +29,38 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.app.shortlovers.ui.theme.BaseBlack
 import com.app.shortlovers.ui.theme.BaseYellow
-import com.app.shortlovers.ui.view.beranda.BerandaView
-import com.app.shortlovers.ui.view.daftarSaya.DaftarSayaView
-import com.app.shortlovers.ui.view.profil.ProfilView
-import com.app.shortlovers.ui.view.untukKamu.UntukKamuView
+import com.app.shortlovers.ui.view.forYou.ForYouView
+import com.app.shortlovers.ui.view.home.HomeView
+import com.app.shortlovers.ui.view.myList.MyListView
+import com.app.shortlovers.ui.view.profile.ProfileView
 
 @Composable
 fun MainView(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
 
-    val items = listOf(
-        BottomNavItem("home", "Beranda", Icons.Default.Home),
-        BottomNavItem("forYou", "Untuk Kamu", Icons.Default.Favorite),
-        BottomNavItem("myList", "Daftar Saya", Icons.Default.List),
-        BottomNavItem("profile", "Profil", Icons.Default.Person)
-    )
+    val items =
+        listOf(
+            BottomNavItem("home", "Home", Icons.Default.Home),
+            BottomNavItem("forYou", "For You", Icons.Default.Favorite),
+            BottomNavItem("myList", "My List", Icons.Default.List),
+            BottomNavItem("profile", "Profile", Icons.Default.Person)
+        )
 
     Scaffold(
+        modifier = modifier,
+        containerColor = Color.Transparent,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = { BottomNavigationBar(navController, items) }
     ) { innerPadding ->
         NavHost(
             navController = navController,
             startDestination = "home",
-            modifier = androidx.compose.ui.Modifier.padding(innerPadding)
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding())
         ) {
-            composable("home") { BerandaView() }
-            composable("forYou") { UntukKamuView() }
-            composable("myList") { DaftarSayaView() }
-            composable("profile") { ProfilView() }
+            composable("home") { HomeView() }
+            composable("forYou") { ForYouView() }
+            composable("myList") { MyListView() }
+            composable("profile") { ProfileView() }
         }
     }
 }
@@ -69,22 +74,14 @@ fun BottomNavigationBar(navController: NavHostController, items: List<BottomNavI
     Column {
         Divider(color = BaseYellow, thickness = 1.dp)
 
-        NavigationBar(
-            containerColor = backgroundColor,
-            tonalElevation = 0.dp
-        ) {
+        NavigationBar(containerColor = backgroundColor, tonalElevation = 0.dp) {
             val currentRoute = currentRoute(navController)
 
             items.forEach { item ->
                 val selected = currentRoute == item.route
 
                 NavigationBarItem(
-                    icon = {
-                        Icon(
-                            item.icon,
-                            contentDescription = item.label
-                        )
-                    },
+                    icon = { Icon(item.icon, contentDescription = item.label) },
                     label = { Text(item.label) },
                     selected = selected,
                     onClick = {
@@ -96,19 +93,19 @@ fun BottomNavigationBar(navController: NavHostController, items: List<BottomNavI
                             restoreState = true
                         }
                     },
-                    colors = NavigationBarItemDefaults.colors(
-                        selectedIconColor = selectedColor,
-                        unselectedIconColor = unselectedColor,
-                        selectedTextColor = selectedColor,
-                        unselectedTextColor = unselectedColor,
-                        indicatorColor = Color.Transparent
-                    )
+                    colors =
+                        NavigationBarItemDefaults.colors(
+                            selectedIconColor = selectedColor,
+                            unselectedIconColor = unselectedColor,
+                            selectedTextColor = selectedColor,
+                            unselectedTextColor = unselectedColor,
+                            indicatorColor = Color.Transparent
+                        )
                 )
             }
         }
     }
 }
-
 
 @Composable
 fun currentRoute(navController: NavHostController): String? {

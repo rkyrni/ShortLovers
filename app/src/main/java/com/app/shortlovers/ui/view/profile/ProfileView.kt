@@ -1,4 +1,4 @@
-package com.app.shortlovers.ui.view.profil
+package com.app.shortlovers.ui.view.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,29 +27,29 @@ import com.app.shortlovers.ui.theme.BaseYellow
 import com.app.shortlovers.viewModel.profile.ProfileViewModel
 
 @Composable
-fun ProfilView(viewModel: ProfileViewModel = viewModel()) {
+fun ProfileView(viewModel: ProfileViewModel = viewModel()) {
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-//        Image(
-//            painter = painterResource(id = R.drawable.bg_1),
-//            contentDescription = null,
-//            contentScale = ContentScale.Crop,
-//            modifier = Modifier.fillMaxSize()
-//        )
+    Box(modifier = Modifier.fillMaxSize()) {
+        //        Image(
+        //            painter = painterResource(id = R.drawable.bg_1),
+        //            contentDescription = null,
+        //            contentScale = ContentScale.Crop,
+        //            modifier = Modifier.fillMaxSize()
+        //        )
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.8f),
-                            Color.Black.copy(alpha = 0.8f),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    Color.Black.copy(alpha = 0.8f),
+                                    Color.Black.copy(alpha = 0.8f),
+                                )
                         )
                     )
-                )
         )
         Column(
             modifier = Modifier
@@ -59,7 +59,7 @@ fun ProfilView(viewModel: ProfileViewModel = viewModel()) {
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Buka Pengalaman",
+                text = "Unlock Your",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
@@ -68,7 +68,7 @@ fun ProfilView(viewModel: ProfileViewModel = viewModel()) {
             )
 
             Text(
-                text = "Pribadi Anda",
+                text = "Personal Experience",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
@@ -82,21 +82,21 @@ fun ProfilView(viewModel: ProfileViewModel = viewModel()) {
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "Nikmati film dan acara TV favorit Anda,",
+                    text = "Enjoy your favorite movies and TV shows,",
                     color = Color.White,
                     fontSize = 19.sp,
                     modifier = Modifier.padding(0.dp),
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "dengan rekomendasi yang",
+                    text = "with recommendations",
                     color = Color.White,
                     fontSize = 19.sp,
                     modifier = Modifier.padding(0.dp),
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "dipersonalisasi hanya untuk Anda.",
+                    text = "personalized just for you.",
                     color = Color.White,
                     fontSize = 19.sp,
                     modifier = Modifier.padding(0.dp),
@@ -106,10 +106,8 @@ fun ProfilView(viewModel: ProfileViewModel = viewModel()) {
 
             Spacer(modifier = Modifier.height(50.dp))
 
-
-
             Button(
-                onClick = { },
+                onClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 19.dp),
@@ -117,7 +115,7 @@ fun ProfilView(viewModel: ProfileViewModel = viewModel()) {
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "Masuk",
+                    text = "Sign In",
                     color = Color.Black,
                     fontSize = 19.sp,
                     fontWeight = FontWeight.Bold,

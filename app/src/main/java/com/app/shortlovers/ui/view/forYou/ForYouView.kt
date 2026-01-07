@@ -1,4 +1,4 @@
-package com.app.shortlovers.ui.view.untukKamu
+package com.app.shortlovers.ui.view.forYou
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,8 +8,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @Composable
-fun UntukKamuView() {
-    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text("📋 Untuk Kamu")
-    }
+fun ForYouView() {
+    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { Text("📋 For You") }
 }

@@ -44,45 +44,36 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
 
     val annotatedText = buildAnnotatedString {
         withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp)) {
-            append("Saya setuju dengan ")
+            append("I agree to the ")
         }
         pushStringAnnotation(tag = "TERMS", annotation = "https://example.com/terms")
         withStyle(
-            style = SpanStyle(
-                color = Color(0xFF2196F3),
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-            )
-        ) {
-            append("Syarat Layanan")
-        }
+            style =
+                SpanStyle(
+                    color = Color(0xFF2196F3),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
+                )
+        ) { append("Terms of Service") }
         pop()
 
-        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp)) {
-            append(" dan ")
-        }
+        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp)) { append(" and ") }
 
         pushStringAnnotation(tag = "PRIVACY", annotation = "https://example.com/privacy")
         withStyle(
-            style = SpanStyle(
-                color = Color(0xFF2196F3), // biru
-                fontWeight = FontWeight.Bold,
-                fontSize = 16.sp,
-
+            style =
+                SpanStyle(
+                    color = Color(0xFF2196F3), // blue
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp,
                 )
-        ) {
-            append("Kebijakan Privasi")
-        }
+        ) { append("Privacy Policy") }
         pop()
 
-        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp)) {
-            append(" kami.")
-        }
+        withStyle(style = SpanStyle(color = Color.White, fontSize = 16.sp)) { append(".") }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.bg_1),
             contentDescription = null,
@@ -91,16 +82,18 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
         )
 
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(
-                            Color.Black.copy(alpha = 0.8f),
-                            Color.Black.copy(alpha = 0.8f),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            colors =
+                                listOf(
+                                    Color.Black.copy(alpha = 0.8f),
+                                    Color.Black.copy(alpha = 0.8f),
+                                )
                         )
                     )
-                )
         )
         Column(
             modifier = Modifier
@@ -110,7 +103,7 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = "Selamat Datang di",
+                text = "Welcome to",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
@@ -119,7 +112,7 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
             )
 
             Text(
-                text = "Bioskop Anda",
+                text = "Your Cinema",
                 color = Color.White,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold,
@@ -133,21 +126,21 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
-                    text = "Nikmati film dan acara TV favorit Anda,",
+                    text = "Enjoy your favorite movies and TV shows,",
                     color = Color.White,
                     fontSize = 19.sp,
                     modifier = Modifier.padding(0.dp),
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "dengan rekomendasi yang",
+                    text = "with recommendations",
                     color = Color.White,
                     fontSize = 19.sp,
                     modifier = Modifier.padding(0.dp),
                     textAlign = TextAlign.Center
                 )
                 Text(
-                    text = "dipersonalisasi hanya untuk Anda.",
+                    text = "personalized just for you.",
                     color = Color.White,
                     fontSize = 19.sp,
                     modifier = Modifier.padding(0.dp),
@@ -160,38 +153,35 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Checkbox(
                     checked = isChecked,
-                    onCheckedChange = { checked ->
-                        viewModel.onCheckboxChange(checked)
-                    },
+                    onCheckedChange = { checked -> viewModel.onCheckboxChange(checked) },
                     colors = CheckboxDefaults.colors(checkedColor = BaseYellow)
                 )
                 ClickableText(
                     text = annotatedText,
                     onClick = { offset ->
-                        annotatedText.getStringAnnotations(
-                            tag = "TERMS",
-                            start = offset,
-                            end = offset
-                        )
-                            .firstOrNull()?.let { annotation ->
-                                println("Klik: ${annotation.item}")
-                            }
+                        annotatedText
+                            .getStringAnnotations(
+                                tag = "TERMS",
+                                start = offset,
+                                end = offset
+                            )
+                            .firstOrNull()
+                            ?.let { annotation -> println("Click: ${annotation.item}") }
 
-                        annotatedText.getStringAnnotations(
-                            tag = "PRIVACY",
-                            start = offset,
-                            end = offset
-                        )
-                            .firstOrNull()?.let { annotation ->
-                                println("Klik: ${annotation.item}")
-                            }
+                        annotatedText
+                            .getStringAnnotations(
+                                tag = "PRIVACY",
+                                start = offset,
+                                end = offset
+                            )
+                            .firstOrNull()
+                            ?.let { annotation -> println("Click: ${annotation.item}") }
                     }
                 )
-
             }
 
             Button(
-                onClick = { },
+                onClick = {},
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 19.dp),
@@ -199,7 +189,7 @@ fun StartedView(modifier: Modifier = Modifier, viewModel: StartedViewModel = vie
                 shape = RoundedCornerShape(8.dp)
             ) {
                 Text(
-                    text = "Mulai",
+                    text = "Get Started",
                     color = Color.Black,
                     fontSize = 19.sp,
                     fontWeight = FontWeight.Bold,

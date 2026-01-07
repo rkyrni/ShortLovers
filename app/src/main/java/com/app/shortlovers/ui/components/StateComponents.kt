@@ -65,8 +65,7 @@ fun shimmerBrush(): Brush {
         targetValue = 1000f,
         animationSpec =
             infiniteRepeatable(
-                animation =
-                    tween(durationMillis = 1200, easing = LinearEasing),
+                animation = tween(durationMillis = 1200, easing = LinearEasing),
                 repeatMode = RepeatMode.Restart
             ),
         label = "shimmer_translate"
@@ -84,11 +83,9 @@ fun shimmerBrush(): Brush {
 fun LoadingView(modifier: Modifier = Modifier) {
     val shimmer = shimmerBrush()
 
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(16.dp)
-    ) {
+    Column(modifier = modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
         // Carousel placeholder
         Box(
             modifier =
@@ -173,8 +170,8 @@ fun LoadingView(modifier: Modifier = Modifier) {
 fun EmptyView(
     modifier: Modifier = Modifier,
     icon: ImageVector = Icons.Default.Info,
-    title: String = "Tidak Ada Data",
-    message: String = "Belum ada konten untuk ditampilkan",
+    title: String = "No Data",
+    message: String = "No content to display yet",
     actionLabel: String? = null,
     onAction: (() -> Unit)? = null
 ) {
@@ -220,17 +217,10 @@ fun EmptyView(
 
             OutlinedButton(
                 onClick = onAction,
-                colors =
-                    ButtonDefaults.outlinedButtonColors(
-                        contentColor = BaseYellow
-                    ),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = BaseYellow),
                 shape = RoundedCornerShape(20.dp)
             ) {
-                Text(
-                    text = actionLabel,
-                    fontFamily = KumbhSansFamily,
-                    fontWeight = FontWeight.Bold
-                )
+                Text(text = actionLabel, fontFamily = KumbhSansFamily, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -240,7 +230,7 @@ fun EmptyView(
 @Composable
 fun ErrorView(
     modifier: Modifier = Modifier,
-    title: String = "Terjadi Kesalahan",
+    title: String = "An Error Occurred",
     message: String,
     onRetry: () -> Unit
 ) {
@@ -291,13 +281,7 @@ fun ErrorView(
                     contentColor = Color.Black
                 ),
             shape = RoundedCornerShape(20.dp)
-        ) {
-            Text(
-                text = "Coba Lagi",
-                fontFamily = KumbhSansFamily,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        ) { Text(text = "Try Again", fontFamily = KumbhSansFamily, fontWeight = FontWeight.Bold) }
     }
 }
 
@@ -321,7 +305,7 @@ fun OfflineView(modifier: Modifier = Modifier, onRetry: () -> Unit) {
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = "Tidak Ada Koneksi",
+            text = "No Connection",
             color = Color.White,
             fontFamily = KumbhSansFamily,
             fontWeight = FontWeight.Bold,
@@ -332,7 +316,7 @@ fun OfflineView(modifier: Modifier = Modifier, onRetry: () -> Unit) {
         Spacer(modifier = Modifier.height(8.dp))
 
         Text(
-            text = "Periksa koneksi internet Anda dan coba lagi",
+            text = "Check your internet connection and try again",
             color = Color.Gray,
             fontFamily = KumbhSansFamily,
             fontWeight = FontWeight.Normal,
@@ -351,12 +335,6 @@ fun OfflineView(modifier: Modifier = Modifier, onRetry: () -> Unit) {
                     contentColor = Color.Black
                 ),
             shape = RoundedCornerShape(20.dp)
-        ) {
-            Text(
-                text = "Coba Lagi",
-                fontFamily = KumbhSansFamily,
-                fontWeight = FontWeight.Bold
-            )
-        }
+        ) { Text(text = "Try Again", fontFamily = KumbhSansFamily, fontWeight = FontWeight.Bold) }
     }
 }

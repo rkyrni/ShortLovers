@@ -1,4 +1,4 @@
-package com.app.shortlovers.viewModel.beranda
+package com.app.shortlovers.viewModel.home
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -17,7 +17,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class BerandaViewModel : ViewModel() {
+class HomeViewModel : ViewModel() {
     private val _mainData: MutableState<List<MainResponse>?> = mutableStateOf(null)
     val mainData: State<List<MainResponse>?> = _mainData
 
@@ -30,11 +30,11 @@ class BerandaViewModel : ViewModel() {
     private val _greeting = MutableStateFlow("Loading...")
     val greeting = _greeting.asStateFlow()
 
-    val LogTag = BerandaViewModel::class.simpleName
+    val LogTag = HomeViewModel::class.simpleName
 
     init {
         fetchMainData()
-        Log.d(LogTag, "BerandaViewModel initialized")
+        Log.d(LogTag, "HomeViewModel initialized")
     }
 
     fun fetchMainData() {

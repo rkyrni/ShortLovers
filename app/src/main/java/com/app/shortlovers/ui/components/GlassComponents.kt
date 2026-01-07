@@ -173,9 +173,11 @@ private fun GlassTabUnselectedPreview() {
 @Preview(showBackground = true, backgroundColor = 0xFF1B1A1A)
 @Composable
 private fun GlassBackgroundPreview() {
-    Box(modifier = Modifier
-        .glassBackground()
-        .padding(16.dp)) {
+    Box(
+        modifier = Modifier
+            .glassBackground()
+            .padding(16.dp)
+    ) {
         Text(text = "Glass Background", color = Color.White, fontFamily = KumbhSansFamily)
     }
 }
@@ -183,9 +185,11 @@ private fun GlassBackgroundPreview() {
 @Preview(showBackground = true, backgroundColor = 0xFF1B1A1A)
 @Composable
 private fun FrostedOverlayPreview() {
-    Box(modifier = Modifier
-        .frostedOverlay()
-        .padding(16.dp)) {
+    Box(
+        modifier = Modifier
+            .frostedOverlay()
+            .padding(16.dp)
+    ) {
         Text(text = "Frosted Overlay", color = Color.White, fontFamily = KumbhSansFamily)
     }
 }
