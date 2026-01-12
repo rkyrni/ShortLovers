@@ -35,9 +35,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,7 +56,8 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.app.shortlovers.R
 import com.app.shortlovers.core.models.DirectusErrorCode
-import com.app.shortlovers.core.models.MainResponseDrama
+import com.app.shortlovers.core.models.TabItem
+import com.app.shortlovers.core.models.Title
 import com.app.shortlovers.ui.components.EmptyView
 import com.app.shortlovers.ui.components.ErrorView
 import com.app.shortlovers.ui.components.LoadingView
@@ -75,42 +74,12 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun HomeView(viewModel: HomeViewModel = viewModel()) {
-    val mainData by viewModel.mainData
+    val tabs by viewModel.tabs.collectAsState()
+    val selectedTabIndex by viewModel.selectedTabIndex.collectAsState()
+    val titles by viewModel.titles.collectAsState()
+    val featuredTitles by viewModel.featuredTitles.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
-
-    // Get selected tab index
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
-
-    // Get tabs from API data
-    val tabs = mainData?.map { it.tabName ?: "" } ?: listOf("Main", "Latest", "Popular", "All")
-
-    // Get dramas for current selected tab
-    val currentDramas =
-        remember(mainData, selectedTabIndex) {
-            mainData?.getOrNull(selectedTabIndex)?.let { tab ->
-                // If tab has categories, flatten all dramas from categories
-                if (!tab.categories.isNullOrEmpty()) {
-                    tab.categories.flatMap { it.dramas ?: emptyList() }
-                } else {
-                    tab.dramas ?: emptyList()
-                }
-            }
-                ?: emptyList()
-        }
-
-    // Get featured dramas for carousel (from first tab/Utama)
-    val featuredDramas =
-        remember(mainData) {
-            mainData?.firstOrNull()?.let { tab ->
-                if (!tab.categories.isNullOrEmpty()) {
-                    tab.categories.flatMap { it.dramas ?: emptyList() }.take(5)
-                } else {
-                    tab.dramas?.take(5) ?: emptyList()
-                }
-            }
-                ?: emptyList()
-        }
 
     Box(
         modifier =
@@ -158,7 +127,7 @@ fun HomeView(viewModel: HomeViewModel = viewModel()) {
                         OfflineView(
                             onRetry = {
                                 viewModel.clearError()
-                                viewModel.fetchMainData()
+                                viewModel.refresh()
                             }
                         )
                     } else {
@@ -166,18 +135,18 @@ fun HomeView(viewModel: HomeViewModel = viewModel()) {
                             message = error!!.getUserFriendlyMessage(),
                             onRetry = {
                                 viewModel.clearError()
-                                viewModel.fetchMainData()
+                                viewModel.refresh()
                             }
                         )
                     }
                 }
 
-                mainData.isNullOrEmpty() -> {
+                tabs.isEmpty() -> {
                     EmptyView(
                         title = "No Content Yet",
                         message = "Content is being prepared. Please try again later.",
                         actionLabel = "Reload",
-                        onAction = { viewModel.fetchMainData() }
+                        onAction = { viewModel.refresh() }
                     )
                 }
 
@@ -195,27 +164,27 @@ fun HomeView(viewModel: HomeViewModel = viewModel()) {
                             ScrollableTabMenu(
                                 tabs = tabs,
                                 selectedTabIndex = selectedTabIndex,
-                                onTabSelected = { selectedTabIndex = it }
+                                onTabSelected = { viewModel.selectTab(it) }
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                         }
 
                         // Carousel
-                        item { CarouselComponent(featuredDramas) }
+                        item { CarouselComponent(featuredTitles) }
 
                         // Spacer before grid
                         item { Spacer(modifier = Modifier.height(16.dp)) }
 
                         // Series Grid - manual 2-column layout
-                        items(currentDramas.chunked(2)) { rowItems ->
+                        items(titles.chunked(2)) { rowItems ->
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp),
                                 horizontalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                rowItems.forEach { drama ->
-                                    Box(modifier = Modifier.weight(1f)) { SeriesCard(drama) }
+                                rowItems.forEach { title ->
+                                    Box(modifier = Modifier.weight(1f)) { SeriesCard(title) }
                                 }
                                 // Fill empty space if odd number
                                 if (rowItems.size == 1) {
@@ -262,20 +231,24 @@ fun SearchBar() {
 }
 
 @Composable
-fun CarouselComponent(dramas: List<MainResponseDrama>) {
+fun CarouselComponent(titles: List<Title>) {
     // Fallback to placeholder images if no data
     val images =
-        if (dramas.isEmpty()) {
-            listOf(R.drawable.poster1, R.drawable.poster2, R.drawable.poster3)
-        } else {
-            dramas.map { it.coverLink ?: it.cover }
+        remember(titles) {
+            if (titles.isEmpty()) {
+                listOf(R.drawable.poster1, R.drawable.poster2, R.drawable.poster3)
+            } else {
+                titles.map { it.posterUrl }
+            }
         }
 
-    val titles =
-        if (dramas.isEmpty()) {
-            listOf("The Reborn Tycoon", "Love Behind the Orange Sky", "Endless Adventure")
-        } else {
-            dramas.map { it.title ?: "" }
+    val titleTexts =
+        remember(titles) {
+            if (titles.isEmpty()) {
+                listOf("The Reborn Tycoon", "Love Behind the Orange Sky", "Endless Adventure")
+            } else {
+                titles.map { it.title ?: "" }
+            }
         }
 
     val pagerState = rememberPagerState(pageCount = { images.size.coerceAtLeast(1) })
@@ -343,10 +316,9 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
                             )
                 )
 
-                // Glass frosted title overlay
-                // Title overlay with shadow (no box)
+                // Title overlay with shadow
                 Text(
-                    text = titles.getOrNull(page) ?: "",
+                    text = titleTexts.getOrNull(page) ?: "",
                     color = Color.White,
                     fontFamily = KumbhSansFamily,
                     fontSize = 28.sp,
@@ -397,7 +369,7 @@ fun CarouselComponent(dramas: List<MainResponseDrama>) {
 }
 
 @Composable
-fun ScrollableTabMenu(tabs: List<String>, selectedTabIndex: Int, onTabSelected: (Int) -> Unit) {
+fun ScrollableTabMenu(tabs: List<TabItem>, selectedTabIndex: Int, onTabSelected: (Int) -> Unit) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -428,7 +400,7 @@ fun ScrollableTabMenu(tabs: List<String>, selectedTabIndex: Int, onTabSelected: 
                         .padding(horizontal = 20.dp, vertical = 8.dp)
             ) {
                 Text(
-                    text = tab,
+                    text = tab.name,
                     color = if (isSelected) Color.Black else Color.White,
                     fontFamily = KumbhSansFamily,
                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
@@ -487,18 +459,18 @@ fun DropdownFilterButton(text: String, onClick: () -> Unit) {
 }
 
 @Composable
-fun SeriesCard(drama: MainResponseDrama) {
+fun SeriesCard(title: Title) {
     Column(modifier = Modifier.fillMaxWidth()) {
         // Poster
         AsyncImage(
             model =
                 ImageRequest.Builder(LocalContext.current)
-                    .data(drama.coverLink ?: drama.cover)
+                    .data(title.posterUrl)
                     .crossfade(true)
                     .build(),
             placeholder = painterResource(R.drawable.placeholder_drama),
             error = painterResource(R.drawable.placeholder_drama),
-            contentDescription = drama.title,
+            contentDescription = title.title,
             contentScale = ContentScale.Crop,
             modifier =
                 Modifier
@@ -512,7 +484,7 @@ fun SeriesCard(drama: MainResponseDrama) {
 
         // Title
         Text(
-            text = drama.title ?: "",
+            text = title.title ?: "",
             color = Color.White,
             fontFamily = KumbhSansFamily,
             fontWeight = FontWeight.Normal,
